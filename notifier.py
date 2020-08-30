@@ -2,6 +2,8 @@ import json
 import random
 import sys
 import time
+import subprocess
+from datetime import datetime
 
 from hashlib import md5
 
@@ -15,8 +17,8 @@ DELAY_TIME = 1800
 CREDENTIALS_FILE = "twitter_credentials.json"
 
 
-with open(CREDENTIALS_FILE) as f:
-    tc = json.load(f)
+# with open(CREDENTIALS_FILE) as f:
+#     tc = json.load(f)
 
 
 def create_tweet(tweet):
@@ -50,9 +52,9 @@ try:
 except:
     call_time = 0
 
-if call_time + random.randint(DELAY_TIME-30, DELAY_TIME+30) > int(time.time()):
-   print("It is too soon to tweet again") 
-   sys.exit(0)
+# if call_time + random.randint(DELAY_TIME-30, DELAY_TIME+30) > int(time.time()):
+#    print("It is too soon to tweet again") 
+#    sys.exit(0)
 
 
 if "Something went wrong" in first_line:
@@ -75,10 +77,11 @@ if available_site_strings:
     tweet += " 🏕🏕🏕\n"
     tweet += "\n".join(available_site_strings)
     tweet += "\n" + "🏕" * random.randint(5, 20)  # To avoid duplicate tweets.
-    create_tweet(tweet)
+    # create_tweet(tweet)
+    subprocess.call(["terminal-notifier", "-title", tweet, "-message", tweet])
     with open(delay_file, "w") as f:
         f.write(str(int(time.time())))
     sys.exit(0)
 else:
-    print("No campsites available, not tweeting 😞")
+    print("No campsites available, not tweeting 😞", datetime.now())
     sys.exit(1)
